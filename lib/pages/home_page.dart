@@ -8,12 +8,36 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final categories = [
-      {'title': 'Hospitals', 'icon': '🏥'},
-      {'title': 'Schools', 'icon': '🏫'},
-      {'title': 'Colleges', 'icon': '🎓'},
-      {'title': 'Restaurants', 'icon': '🍴'},
-      {'title': 'Parks', 'icon': '🌳'},
-      {'title': 'Malls', 'icon': '🛍️'}
+      {'title': 'Hospital', 'icon': '🏥'},
+      {'title': 'School', 'icon': '🏫'},
+      {'title': 'College', 'icon': '🎓'},
+      {'title': 'Restaurant', 'icon': '🍴'},
+      {'title': 'Park', 'icon': '🌳'},
+      {'title': 'Mall', 'icon': '🛍️'},
+      {'title': 'Pharmacy', 'icon': '💊'},
+      {'title': 'Supermarket', 'icon': '🛒'},
+      {'title': 'Bank', 'icon': '🏦'},
+      {'title': 'ATM', 'icon': '🏧'},
+      {'title': 'Gas Station', 'icon': '⛽'},
+      {'title': 'Police Station', 'icon': '🚓'},
+      {'title': 'Fire Station', 'icon': '🚒'},
+      {'title': 'Library', 'icon': '📚'},
+      {'title': 'Gym', 'icon': '🏋️‍♂️'},
+      {'title': 'Cinema', 'icon': '🎬'},
+      {'title': 'Hotel', 'icon': '🏨'},
+      {'title': 'Bus Station', 'icon': '🚏'},
+      {'title': 'Train Station', 'icon': '🚉'},
+      {'title': 'Airport', 'icon': '✈️'},
+      {'title': 'Post Office', 'icon': '📮'},
+      {'title': 'Clinic', 'icon': '🏥'},
+      {'title': 'Dentist', 'icon': '🦷'},
+      {'title': 'Veterinary', 'icon': '🐾'},
+      {'title': 'Church', 'icon': '⛪'},
+      {'title': 'Mosque', 'icon': '🕌'},
+      {'title': 'Temple', 'icon': '🛕'},
+      {'title': 'Museum', 'icon': '🏛️'},
+      {'title': 'Zoo', 'icon': '🦁'},
+      {'title': 'Beach', 'icon': '🏖️'}
     ];
 
     return Scaffold(

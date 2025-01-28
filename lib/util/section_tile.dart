@@ -16,10 +16,10 @@ class SectionTile extends StatelessWidget {
       child: Column(
         children: [
           Text(icon, style: const TextStyle(fontSize: 50)),
-          const SizedBox(width: 10),
+          const SizedBox(width: 7),
           Text(
             title,
-            style: const TextStyle(fontSize: 20),
+            style: const TextStyle(fontSize: 18),
           ),
         ],
       ),
