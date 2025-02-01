@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:proximity_finder/services/barikoi_services.dart';
+import 'package:proximity_finder/util/tile_builders.dart';
 
 class ServicesPage extends StatefulWidget {
   final String category;
 
-  ServicesPage({required this.category});
+  const ServicesPage({super.key, required this.category});
 
   @override
   _ServicesPageState createState() => _ServicesPageState();
@@ -20,6 +21,8 @@ class _ServicesPageState extends State<ServicesPage> {
   String area = '';
   String errorMessage = '';
   bool isSearching = false;
+  Position? currentPosition;
+  String? sessionId;
 
   @override
   void initState() {
@@ -66,9 +69,9 @@ class _ServicesPageState extends State<ServicesPage> {
     }
 
     // Get the current location
-    Position position = await Geolocator.getCurrentPosition(
+    currentPosition = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
-    _fetchNearbyServices(position.latitude, position.longitude);
+    _fetchNearbyServices(currentPosition!.latitude, currentPosition!.longitude);
   }
 
   Future<void> _fetchNearbyServices(double latitude, double longitude) async {
@@ -83,10 +86,11 @@ class _ServicesPageState extends State<ServicesPage> {
     try {
       final results = await barikoiService.getNearbyPlaces(
           latitude, longitude, widget.category.toLowerCase(), 2.0);
-      print('API Response: $results'); // Debug print to check API response
       if (mounted) {
         setState(() {
-          services = results;
+          services = List<Map<String, dynamic>>.from(results['places']);
+          sessionId =
+              results['session_id'].toString(); // Ensure session_id is a String
           isLoading = false;
           if (services.isEmpty) {
             errorMessage = 'No nearby services found.';
@@ -94,7 +98,6 @@ class _ServicesPageState extends State<ServicesPage> {
         });
       }
     } catch (e) {
-      print('Error: $e'); // Debug print to check for errors
       if (mounted) {
         setState(() {
           isLoading = false;
@@ -118,10 +121,11 @@ class _ServicesPageState extends State<ServicesPage> {
     try {
       final results =
           await barikoiService.getPlaces(area, widget.category.toLowerCase());
-      print('API Response: $results'); // Debug print to check API response
       if (mounted) {
         setState(() {
-          services = results;
+          services = List<Map<String, dynamic>>.from(results['places']);
+          sessionId =
+              results['session_id'].toString(); // Ensure session_id is a String
           isLoading = false;
           if (services.isEmpty) {
             errorMessage = 'No results found for $area';
@@ -129,7 +133,6 @@ class _ServicesPageState extends State<ServicesPage> {
         });
       }
     } catch (e) {
-      print('Error: $e'); // Debug print to check for errors
       if (mounted) {
         setState(() {
           isLoading = false;
@@ -137,72 +140,6 @@ class _ServicesPageState extends State<ServicesPage> {
         });
       }
     }
-  }
-
-  Widget buildNearbyServiceTile(Map<String, dynamic> service) {
-    final name = service['name'] ?? 'No name available';
-    final address = service['Address'] ?? 'No address available';
-    final subType = service['subType'] ?? '';
-    final addressWithoutFirstPart = address.contains(',')
-        ? address.substring(address.indexOf(',') + 1).trim()
-        : address;
-
-    return Card(
-      margin: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-      child: ListTile(
-        title: Text(
-          name,
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 16,
-          ),
-        ),
-        subtitle: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (subType.isNotEmpty)
-              Text(
-                subType,
-                style: TextStyle(
-                  fontSize: 14,
-                ),
-              ),
-            Text(
-              addressWithoutFirstPart,
-              style: TextStyle(
-                fontSize: 14,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget buildSearchResultTile(Map<String, dynamic> service) {
-    final address = service['address'] ?? 'No address available';
-    final name = address
-        .split(',')[0]; // Extract the first part of the address as the name
-
-    return Card(
-      margin: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-      child: ListTile(
-        leading: Icon(Icons.place),
-        title: Text(
-          name,
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 16,
-          ),
-        ),
-        subtitle: Text(
-          address,
-          style: TextStyle(
-            fontSize: 14,
-          ),
-        ),
-      ),
-    );
   }
 
   @override
@@ -241,8 +178,20 @@ class _ServicesPageState extends State<ServicesPage> {
                         itemBuilder: (context, index) {
                           final service = services[index];
                           return isSearching
-                              ? buildSearchResultTile(service)
-                              : buildNearbyServiceTile(service);
+                              ? buildSearchResultTile(
+                                  service,
+                                  context,
+                                  currentPosition!.latitude,
+                                  currentPosition!.longitude,
+                                  barikoiService.apiKey,
+                                  sessionId!)
+                              : buildNearbyServiceTile(
+                                  service,
+                                  context,
+                                  currentPosition!.latitude,
+                                  currentPosition!.longitude,
+                                  barikoiService.apiKey,
+                                  sessionId!);
                         },
                       ),
                     ),

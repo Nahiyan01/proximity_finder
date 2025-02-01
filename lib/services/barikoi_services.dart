@@ -6,7 +6,7 @@ class BarikoiService {
 
   BarikoiService({required this.apiKey});
 
-  Future<List<Map<String, dynamic>>> getPlaces(String area, String type) async {
+  Future<Map<String, dynamic>> getPlaces(String area, String type) async {
     final query = '$area,$type';
     final url =
         'https://barikoi.xyz/api/v2/search-place?q=$query&api_key=$apiKey';
@@ -17,7 +17,11 @@ class BarikoiService {
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       print('Response Data: $data'); // Debug print to check response data
-      return List<Map<String, dynamic>>.from(data['places'] ?? []);
+      return {
+        'places': List<Map<String, dynamic>>.from(data['places'] ?? []),
+        'session_id':
+            data['session_id'].toString(), // Ensure session_id is a String
+      };
     } else {
       print(
           'Failed to load places: ${response.statusCode}'); // Debug print to check status code
@@ -25,10 +29,10 @@ class BarikoiService {
     }
   }
 
-  Future<List<Map<String, dynamic>>> getNearbyPlaces(
+  Future<Map<String, dynamic>> getNearbyPlaces(
       double latitude, double longitude, String type, double radius) async {
     final url =
-        'https://barikoi.xyz/v2/api/search/nearby/$type/$radius/10?api_key=$apiKey&longitude=$longitude&latitude=$latitude&ptype=$type';
+        'https://barikoi.xyz/v2/api/search/nearby/category/$radius/10?api_key=$apiKey&longitude=$longitude&latitude=$latitude&ptype=$type';
 
     print('Request URL: $url'); // Debug print to check request URL
 
@@ -39,7 +43,11 @@ class BarikoiService {
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       print('Response Data: $data'); // Debug print to check response data
-      return List<Map<String, dynamic>>.from(data['places'] ?? []);
+      return {
+        'places': List<Map<String, dynamic>>.from(data['places'] ?? []),
+        'session_id':
+            data['session_id'].toString(), // Ensure session_id is a String
+      };
     } else {
       print(
           'Failed to load nearby places: ${response.statusCode}'); // Debug print to check status code
