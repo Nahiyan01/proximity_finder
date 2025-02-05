@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1002352547511",
+    "project_id": "proximity-finder-7d046",
+    "storage_bucket": "proximity-finder-7d046.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1002352547511:android:41770ec918a6c63b251f32",
+        "android_client_info": {
+          "package_name": "com.example.proximity_finder"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDFRo8UFLnf2JRKbjotNh15TXSZPHAgt_E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

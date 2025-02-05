@@ -39,6 +39,9 @@ dependencies:
   maplibre_gl: ^0.20.0
   uuid: ^4.5.1
   flexible_polyline_dart: ^1.0.1
+  flutter_polyline_points: ^2.1.0
+  firebase_core: ^3.10.1
+  firebase_auth: ^5.4.1
 
 dev_dependencies:
   flutter_test:

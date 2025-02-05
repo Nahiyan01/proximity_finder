@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:proximity_finder/pages/map_page.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
-import 'package:flexible_polyline_dart/flutter_flexible_polyline.dart';
+import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 
 Future<void> fetchRouteOverview(
     double currentLatitude,
@@ -19,7 +19,7 @@ Future<void> fetchRouteOverview(
   if (response.statusCode == 200) {
     final data = json.decode(response.body);
     final polyline = data['routes'][0]['geometry'];
-    final decodedPolyline = decodeFlexiblePolyline(polyline);
+    final decodedPolyline = decodePolyline(polyline);
 
     Navigator.push(
       context,
@@ -38,14 +38,12 @@ Future<void> fetchRouteOverview(
   }
 }
 
-List<LatLng> decodeFlexiblePolyline(String polyline) {
-  try {
-    final decoded = FlexiblePolyline.decode(polyline);
-    return decoded.map((point) => LatLng(point.lat, point.lng)).toList();
-  } catch (e) {
-    print('Failed to decode polyline: $e');
-    return [];
-  }
+List<LatLng> decodePolyline(String encoded) {
+  PolylinePoints polylinePoints = PolylinePoints();
+  List<PointLatLng> points = polylinePoints.decodePolyline(encoded);
+  return points
+      .map((point) => LatLng(point.latitude, point.longitude))
+      .toList();
 }
 
 Future<void> fetchPlaceDetails(

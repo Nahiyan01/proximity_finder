@@ -1,9 +1,20 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:proximity_finder/pages/login_page.dart';
 import 'package:proximity_finder/pages/services_pages.dart';
 import 'package:proximity_finder/util/section_tile.dart';
 
 class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+  HomePage({super.key});
+
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  Future<void> _logout(BuildContext context) async {
+    await _auth.signOut();
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => LoginPage()),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -68,16 +79,16 @@ class HomePage extends StatelessWidget {
             ),
             SizedBox(height: 10),
             ListTile(
-              title: Text('login'),
+              title: Text('issue a new service'),
               onTap: () {
                 Navigator.pop(context);
               },
             ),
             SizedBox(height: 10),
             ListTile(
-              title: Text('issue a new service'),
+              title: Text('logout'),
               onTap: () {
-                Navigator.pop(context);
+                _logout(context);
               },
             ),
           ],
