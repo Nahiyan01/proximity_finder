@@ -71,7 +71,40 @@ class _ServicesPageState extends State<ServicesPage> {
     // Get the current location
     currentPosition = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
-    _fetchNearbyServices(currentPosition!.latitude, currentPosition!.longitude);
+    _searchInitialPlaces();
+  }
+
+  Future<void> _searchInitialPlaces() async {
+    if (mounted) {
+      setState(() {
+        isLoading = true;
+        errorMessage = '';
+        isSearching = false;
+      });
+    }
+
+    try {
+      final results = await barikoiService.getPlaces(
+          'kohinurgate,Savar,Dhaka', widget.category.toLowerCase());
+      if (mounted) {
+        setState(() {
+          services = List<Map<String, dynamic>>.from(results['places']);
+          sessionId =
+              results['session_id'].toString(); // Ensure session_id is a String
+          isLoading = false;
+          if (services.isEmpty) {
+            errorMessage = 'No results found for kohinurgate, Savar, Dhaka';
+          }
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+          errorMessage = 'Failed to load places';
+        });
+      }
+    }
   }
 
   Future<void> _fetchNearbyServices(double latitude, double longitude) async {
@@ -185,7 +218,7 @@ class _ServicesPageState extends State<ServicesPage> {
                                   currentPosition!.longitude,
                                   barikoiService.apiKey,
                                   sessionId!)
-                              : buildNearbyServiceTile(
+                              : buildSearchResultTile(
                                   service,
                                   context,
                                   currentPosition!.latitude,

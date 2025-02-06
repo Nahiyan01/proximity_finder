@@ -25,8 +25,8 @@ Future<void> fetchRouteOverview(
       context,
       MaterialPageRoute(
         builder: (context) => MapPage(
-          currentLatitude: currentLatitude,
-          currentLongitude: currentLongitude,
+          currentLatitude: 23.916949916543917,
+          currentLongitude: 90.23196677236218,
           destinationLatitude: destinationLatitude,
           destinationLongitude: destinationLongitude,
           polyline: decodedPolyline,

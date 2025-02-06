@@ -22,7 +22,7 @@ class MapPage extends StatefulWidget {
 }
 
 class _MapPageState extends State<MapPage> {
-  MaplibreMapController? mController;
+  MapLibreMapController? mController;
 
   static const styleId = 'osm-liberty'; // barikoi map style id
   static const apiKey =
@@ -36,54 +36,46 @@ class _MapPageState extends State<MapPage> {
       appBar: AppBar(
         title: Text('Route to Destination'),
       ),
-      body: MaplibreMap(
+      body: MapLibreMap(
         initialCameraPosition: CameraPosition(
-          target: LatLng(widget.currentLatitude, widget.currentLongitude),
-          zoom: 12,
+          target: LatLng(23.91710281311872, 90.23194615791373),
+          zoom: 17,
         ),
-        onMapCreated: (MaplibreMapController mapController) {
-          mController = mapController;
-          _addCircles();
-          _addPolyline();
+        onMapCreated: (MapLibreMapController mController) {
+          this.mController = mController;
         },
         styleString: mapUrl,
+        onStyleLoadedCallback: () {
+          mController?.addLine(
+            LineOptions(
+              geometry: widget.polyline,
+              lineColor: "#4CC764", // color of the line, in hex string
+              lineWidth: 5.0, // width of the line
+              lineOpacity: 0.5, // transparency of the line
+            ),
+          );
+        },
       ),
     );
   }
 
-  void _addCircles() {
-    if (mController != null) {
-      mController?.addCircle(
-        CircleOptions(
-          geometry: LatLng(widget.currentLatitude, widget.currentLongitude),
-          circleRadius: 8.0,
-          circleColor: "#ff0000", // red color for current location
-          circleOpacity: 0.8,
-        ),
-      );
-
-      mController?.addCircle(
-        CircleOptions(
-          geometry:
-              LatLng(widget.destinationLatitude, widget.destinationLongitude),
-          circleRadius: 8.0,
-          circleColor: "#0000ff", // blue color for destination location
-          circleOpacity: 0.8,
-        ),
-      );
-    }
-  }
-
-  void _addPolyline() {
-    if (mController != null) {
-      mController?.addLine(
-        LineOptions(
-          geometry: widget.polyline,
-          lineColor: "#ff0000", // color of the line, in hex string
-          lineWidth: 5.0, // width of the line
-          lineOpacity: 0.8, // transparency of the line
-        ),
-      );
-    }
-  }
+  // void _addPolyline() {
+  //   print('Adding polyline: ${widget.polyline}'); // Debug print
+  //   if (mController != null) {
+  //     if (widget.polyline.isNotEmpty) {
+  //       mController?.addLine(
+  //         LineOptions(
+  //           geometry: widget.polyline,
+  //           lineColor: "#ff0000", // color of the line, in hex string
+  //           lineWidth: 5.0, // width of the line
+  //           lineOpacity: 0.8, // transparency of the line
+  //         ),
+  //       );
+  //     } else {
+  //       print('Error: Polyline is empty'); // Debug print
+  //     }
+  //   } else {
+  //     print('Error: mController is null'); // Debug print
+  //   }
+  //}
 }
